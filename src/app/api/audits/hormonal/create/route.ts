@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/lib/database';
 import Anthropic from '@anthropic-ai/sdk';
 import { 
   HORMONAL_GRATUIT_SYSTEM_PROMPT, 
