@@ -1,54 +1,37 @@
 services:
   - type: web
-    name: achzod-audit-platform
+    name: audit-hormonal-platform
     runtime: node
     region: frankfurt
     plan: starter
     branch: main
     buildCommand: npm install && npx prisma generate && npm run build
     startCommand: npm start
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
+      - key: ANTHROPIC_MAX_TOKENS_GRATUIT
+        value: "5000"
+      - key: ANTHROPIC_MAX_TOKENS_PREMIUM
+        value: "16000"
+      - key: ANTHROPIC_MAX_TOKENS_HORMONAL_GRATUIT
+        value: "3000"
+      - key: ANTHROPIC_MAX_TOKENS_HORMONAL_PREMIUM
+        value: "10000"
+      - key: EMAIL_FROM
+        value: noreply@achzodcoaching.com
       - key: DATABASE_URL
-        fromDatabase:
-          name: neurocharge
-          property: connectionString
-      - key: NEXT_PUBLIC_APP_URL
-        value: https://achzod-audit-platform.onrender.com
-      - key: NEXTAUTH_URL
-        value: https://achzod-audit-platform.onrender.com
-      - key: NEXTAUTH_SECRET
         sync: false
       - key: ANTHROPIC_API_KEY
         sync: false
-      - key: ANTHROPIC_MODEL
-        value: claude-sonnet-4-5-20250929
-      - key: ANTHROPIC_MAX_TOKENS_GRATUIT
-        value: 4000
-      - key: ANTHROPIC_MAX_TOKENS_PREMIUM
-        value: 16000
+      - key: NEXTAUTH_SECRET
+        sync: false
+      - key: NEXTAUTH_URL
+        sync: false
+      - key: NEXT_PUBLIC_APP_URL
+        sync: false
       - key: STRIPE_SECRET_KEY
         sync: false
-      - key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+      - key: STRIPE_PUBLIC_KEY
         sync: false
-      - key: STRIPE_WEBHOOK_SECRET
-        sync: false
-      - key: PAYPAL_CLIENT_ID
-        sync: false
-      - key: PAYPAL_CLIENT_SECRET
-        sync: false
-      - key: NEXT_PUBLIC_PAYPAL_CLIENT_ID
-        sync: false
-      - key: GMAIL_USER
-        sync: false
-      - key: GMAIL_APP_PASSWORD
-        sync: false
-
-databases:
-  - name: neurocharge
-    databaseName: neurocharge
-    user: neurocharge_user
-    plan: starter
-    region: frankfurt
-
