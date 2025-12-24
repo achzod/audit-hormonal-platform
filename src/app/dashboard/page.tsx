@@ -1,12 +1,9 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import { useEffect, useState } from 'react';
-import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Loader2, FileText, Clock, CheckCircle, XCircle, LogOut, Lock, Sparkles } from 'lucide-react';
+import { Loader2, FileText, Clock, CheckCircle, XCircle, LogOut, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
 interface Audit {
@@ -20,19 +17,33 @@ interface Audit {
 }
 
 export default function DashboardPage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const [audits, setAudits] = useState<Audit[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedAudit, setSelectedAudit] = useState<Audit | null>(null);
+  const [user, setUser] = useState<{ name?: string; email?: string } | null>(null);
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/login?returnUrl=/dashboard');
-    } else if (status === 'authenticated') {
+    checkAuthAndFetch();
+  }, []);
+
+  const checkAuthAndFetch = async () => {
+    try {
+      const res = await fetch('/api/auth/session');
+      const session = await res.json();
+      
+      if (!session?.user) {
+        router.push('/auth/login?returnUrl=/dashboard');
+        return;
+      }
+      
+      setUser(session.user);
       fetchAudits();
+    } catch (error) {
+      console.error('Error checking auth:', error);
+      router.push('/auth/login?returnUrl=/dashboard');
     }
-  }, [status, router]);
+  };
 
   const fetchAudits = async () => {
     try {
@@ -46,16 +57,17 @@ export default function DashboardPage() {
     }
   };
 
-  if (status === 'loading' || loading) {
+  const handleSignOut = async () => {
+    await fetch('/api/auth/signout', { method: 'POST' });
+    router.push('/');
+  };
+
+  if (loading) {
     return (
       <div className="min-h-screen bg-dark flex items-center justify-center">
         <Loader2 className="animate-spin text-secondary" size={48} />
       </div>
     );
-  }
-
-  if (!session) {
-    return null;
   }
 
   const getStatusIcon = (status: string) => {
@@ -96,12 +108,14 @@ export default function DashboardPage() {
           </Link>
 
           <div className="flex items-center gap-6">
-            <div className="text-sm">
-              <span className="text-white/60">Bienvenue,</span>
-              <span className="font-semibold ml-2">{session.user?.name || session.user?.email}</span>
-            </div>
+            {user && (
+              <div className="text-sm">
+                <span className="text-white/60">Bienvenue,</span>
+                <span className="font-semibold ml-2">{user.name || user.email}</span>
+              </div>
+            )}
             <button
-              onClick={() => signOut({ callbackUrl: '/' })}
+              onClick={handleSignOut}
               className="text-white/60 hover:text-white transition-colors flex items-center gap-2"
             >
               <LogOut size={18} />
@@ -217,4 +231,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

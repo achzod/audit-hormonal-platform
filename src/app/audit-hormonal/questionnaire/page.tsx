@@ -1,9 +1,10 @@
 'use client';
 
+import { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { ChevronLeft, ChevronRight, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Loader2 } from 'lucide-react';
 
 const SECTIONS = [
   {
@@ -82,7 +83,7 @@ const SECTIONS = [
   }
 ];
 
-export default function QuestionnaireHormonalPage() {
+function QuestionnaireContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const version = searchParams?.get('version') || 'gratuit';
@@ -258,5 +259,21 @@ export default function QuestionnaireHormonalPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-[#101010] flex items-center justify-center">
+      <Loader2 className="animate-spin text-[#8DFFE0]" size={48} />
+    </div>
+  );
+}
+
+export default function QuestionnaireHormonalPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <QuestionnaireContent />
+    </Suspense>
   );
 }
