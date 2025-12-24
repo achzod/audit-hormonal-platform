@@ -20,7 +20,7 @@ services:
       - key: ANTHROPIC_MAX_TOKENS_HORMONAL_PREMIUM
         value: "10000"
       - key: EMAIL_FROM
-        value: noreply@achzodcoaching.com
+        value: coaching@achzodcoaching.com
       - key: DATABASE_URL
         sync: false
       - key: ANTHROPIC_API_KEY
@@ -35,3 +35,12 @@ services:
         sync: false
       - key: STRIPE_PUBLIC_KEY
         sync: false
+      - key: SENDPULSE_API_ID
+        sync: false
+      - key: SENDPULSE_API_SECRET
+        sync: false
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+
