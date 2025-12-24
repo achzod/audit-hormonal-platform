@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER MODEL
+// ============================================
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String    // bcrypt hashed
+  name          String?
+  
+  // Newsletter
+  subscribedToNewsletter Boolean @default(true)
+  sendpulseContactId     String? // ID dans SendPulse
+  
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+  
+  // Relations
+  audits        Audit[]
+  payments      Payment[]
+  activityLogs  ActivityLog[]
+  
+  @@index([email])
+  @@index([createdAt])
+}
+
+// ============================================
+// AUDIT MODEL (Métabolique + Hormonal)
+// ============================================
+model Audit {
+  id            String    @id @default(cuid())
+  
+  // User relation
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Type & Version
+  type          AuditType @default(METABOLIQUE) // METABOLIQUE | HORMONAL
+  version       AuditVersion // GRATUIT | PREMIUM
+  status        AuditStatus @default(PENDING)
+  
+  // Données questionnaire (40 questions)
+  responses     Json      // Store toutes les réponses
+  
+  // Résultat analyse Claude
+  analysis      Json?     // Structured data retourné par Claude
+  
+  // HTML généré complet
+  htmlContent   String?   @db.Text
+  
+  // Analytics
+  viewCount     Int       @default(0)
+  lastViewedAt  DateTime?
+  generationTimeMs Int?    // Temps génération pour monitoring
+  
+  // Payment relation
+  paymentId     String?   @unique
+  payment       Payment?  @relation(fields: [paymentId], references: [id])
+  
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  completedAt   DateTime? // Quand analyse terminée
+  
+  @@index([userId])
+  @@index([version])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ============================================
+// PAYMENT MODEL
+// ============================================
+model Payment {
+  id            String    @id @default(cuid())
+  
+  // User relation
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Audit relation (optional car peut payer avant audit créé)
+  audit         Audit?
+  
+  // Type de produit acheté
+  productType   AuditType @default(METABOLIQUE) // METABOLIQUE | HORMONAL
+  
+  // Montant
+  amount        Int       // En centimes : 7900 = €79 (métabolique) ou 2900 = €29 (hormonal)
+  currency      String    @default("eur")
+  
+  // Provider
+  provider      PaymentProvider // STRIPE | PAYPAL
+  status        PaymentStatus @default(PENDING)
+  
+  // External IDs
+  stripePaymentIntentId  String?   @unique
+  stripeSessionId        String?   @unique
+  paypalOrderId          String?   @unique
+  paypalCaptureId        String?
+  
+  // Metadata
+  metadata      Json?     // Infos supplémentaires
+  failureReason String?   // Si échec
+  
+  // Timestamps
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  paidAt        DateTime?
+  
+  @@index([userId])
+  @@index([status])
+  @@index([provider])
+  @@index([createdAt])
+}
+
+// ============================================
+// ACTIVITY LOG (pour tracking/debugging)
+// ============================================
+model ActivityLog {
+  id            String    @id @default(cuid())
+  
+  // User (optional si action system)
+  userId        String?
+  user          User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  // Action
+  action        String    // "AUDIT_CREATED", "PAYMENT_SUCCESS", "UPGRADE_PREMIUM", etc
+  details       Json?     // Détails de l'action
+  
+  // Request info
+  ipAddress     String?
+  userAgent     String?
+  
+  createdAt     DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+// ============================================
+// ENUMS
+// ============================================
+enum AuditType {
+  METABOLIQUE
+  HORMONAL
+}
+
+enum AuditVersion {
+  GRATUIT
+  PREMIUM
+}
+
+enum AuditStatus {
+  PENDING      // Questionnaire rempli, en attente génération
+  PROCESSING   // Claude API en cours
+  COMPLETED    // Généré avec succès
+  FAILED       // Erreur génération
+}
+
+enum PaymentProvider {
+  STRIPE
+  PAYPAL
+}
+
+enum PaymentStatus {
+  PENDING      // Créé, en attente
+  PROCESSING   // En cours de traitement
+  SUCCEEDED    // Payé avec succès
+  FAILED       // Échec
+  REFUNDED     // Remboursé
+  CANCELLED    // Annulé par user
+}
