@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '../../../../../lib/prisma';
 import Anthropic from '@anthropic-ai/sdk';
 import { 
   HORMONAL_GRATUIT_SYSTEM_PROMPT, 
   buildHormonalGratuitUserPrompt 
-} from '@/lib/prompts/hormonal-gratuit';
+} from '../../../../../lib/prompts/hormonal-gratuit';
 import { 
   HORMONAL_PREMIUM_SYSTEM_PROMPT, 
   buildHormonalPremiumUserPrompt 
-} from '@/lib/prompts/hormonal-premium';
+} from '../../../../../lib/prompts/hormonal-premium';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY!,
