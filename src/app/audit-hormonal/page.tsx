@@ -1,7 +1,23 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Activity, Zap, Target, Flame, TrendingUp, Droplet, Dumbbell, Apple, Beaker, Brain, BookOpen, ChevronDown } from 'lucide-react';
+import {
+  Activity,
+  Zap,
+  Target,
+  Flame,
+  TrendingUp,
+  Droplet,
+  Dumbbell,
+  Apple,
+  Beaker,
+  Brain,
+  BookOpen,
+  ChevronDown,
+  ShieldCheck,
+  Cpu,
+  Clock3,
+} from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 
@@ -65,7 +81,7 @@ export default function AuditHormonalPage() {
       <canvas ref={canvasRef} className="fixed inset-0 pointer-events-none opacity-30" />
       <div className="fixed inset-0 scanlines pointer-events-none" />
 
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6">
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-10 md:pt-16">
         <div 
           className="absolute inset-0 opacity-[0.03]"
           style={{
@@ -73,9 +89,34 @@ export default function AuditHormonalPage() {
             backgroundSize: '50px 50px'
           }}
         />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(141,255,224,0.08),transparent_35%),radial-gradient(circle_at_80%_10%,rgba(153,144,234,0.08),transparent_30%)]" />
         
-        <motion.div className="relative z-10 text-center max-w-5xl" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <h1 className="font-audiowide text-5xl md:text-6xl font-bold mb-3 uppercase tracking-tight neon-cyan" style={{
+        <header className="relative z-20 w-full max-w-6xl mx-auto mb-10 md:mb-16 flex items-center justify-between gap-4 px-2">
+          <div className="flex items-center gap-3">
+            <div className="h-11 w-11 rounded-full bg-gradient-to-br from-[#8DFFE0] to-[#9990EA] flex items-center justify-center shadow-[0_0_20px_rgba(141,255,224,0.4)]">
+              <Cpu className="w-6 h-6 text-[#0a0a0a]" />
+            </div>
+            <div>
+              <p className="font-ibm-mono text-[11px] uppercase text-[#8DFFE0] tracking-[2px]">Achzod // Biohacking Lab</p>
+              <p className="text-white/70 text-sm">Scan Anabolique • Temps réel</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-full border border-[rgba(141,255,224,0.3)] bg-white/5">
+              <Clock3 className="w-4 h-4 text-[#8DFFE0]" />
+              <span className="font-ibm-mono text-xs text-white/80">ETA rapport : &lt; 4h</span>
+            </div>
+            <Link href="/auth/login" className="px-4 py-2 rounded-lg border border-[rgba(141,255,224,0.4)] text-sm font-ibm-mono hover:bg-white/10 transition">
+              Connexion
+            </Link>
+            <Link href="/audit-hormonal/questionnaire?version=premium" className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#8DFFE0] to-[#6FE6CC] text-[#0a0a0a] font-audiowide text-sm uppercase shadow-[0_0_20px_rgba(141,255,224,0.5)] hover:scale-[1.02] transition">
+              Lancer maintenant
+            </Link>
+          </div>
+        </header>
+        
+        <motion.div className="relative z-10 text-center max-w-5xl px-2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <h1 className="font-audiowide text-5xl md:text-6xl font-bold mb-3 uppercase tracking-tight" style={{
             background: 'linear-gradient(135deg, #8DFFE0, #9990EA)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -101,25 +142,47 @@ export default function AuditHormonalPage() {
             <RadarChartPreview />
           </motion.div>
           
-          <motion.button onClick={() => document.getElementById('comparison')?.scrollIntoView({ behavior: 'smooth' })} className="group relative px-16 py-6 bg-gradient-to-r from-[#8DFFE0] to-[#6FE6CC] rounded-lg text-[#101010] font-audiowide font-bold text-base uppercase tracking-wide border-none cursor-pointer" style={{
-            boxShadow: `0 0 20px rgba(141,255,224,0.5), 0 0 40px rgba(141,255,224,0.3), 0 4px 20px rgba(0,0,0,0.5)`
-          }} whileHover={{ scale: 1.05, boxShadow: `0 0 30px rgba(141,255,224,0.8), 0 0 60px rgba(141,255,224,0.5), 0 8px 30px rgba(0,0,0,0.6)` }} whileTap={{ scale: 0.98 }}>
-            <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#101010]" />
-            <span className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#101010]" />
-            <span className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#101010]" />
-            <span className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#101010]" />
-            LANCER LE SCAN →
-          </motion.button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <motion.button onClick={() => document.getElementById('comparison')?.scrollIntoView({ behavior: 'smooth' })} className="group relative px-12 sm:px-16 py-5 bg-gradient-to-r from-[#8DFFE0] to-[#6FE6CC] rounded-lg text-[#101010] font-audiowide font-bold text-sm sm:text-base uppercase tracking-wide border-none cursor-pointer" style={{
+              boxShadow: `0 0 20px rgba(141,255,224,0.5), 0 0 40px rgba(141,255,224,0.3), 0 4px 20px rgba(0,0,0,0.5)`
+            }} whileHover={{ scale: 1.05, boxShadow: `0 0 30px rgba(141,255,224,0.8), 0 0 60px rgba(141,255,224,0.5), 0 8px 30px rgba(0,0,0,0.6)` }} whileTap={{ scale: 0.98 }}>
+              <span className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-[#101010]" />
+              <span className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-[#101010]" />
+              <span className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-[#101010]" />
+              <span className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-[#101010]" />
+              LANCER LE SCAN →
+            </motion.button>
+            <Link href="/audit-hormonal/questionnaire?version=gratuit">
+              <motion.button className="px-12 sm:px-14 py-5 border-2 border-[#9990EA] text-[#9990EA] font-audiowide font-bold text-sm sm:text-base uppercase rounded-lg hover:bg-[#9990EA] hover:text-[#0a0a0a] transition" whileHover={{ scale: 1.04 }}>
+                Version gratuite 4p
+              </motion.button>
+            </Link>
+          </div>
         </motion.div>
 
         <motion.div className="absolute bottom-8" animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
           <ChevronDown className="w-8 h-8 text-[#8DFFE0]/50" />
         </motion.div>
+
+        <div className="relative z-10 mt-14 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-5xl w-full px-2">
+          {[
+            { label: '5000+ profils référencés', tone: '#8DFFE0' },
+            { label: 'ETA rapport < 4h', tone: '#9990EA' },
+            { label: 'Corrélation 92% vs prise de sang', tone: '#8DFFE0' },
+          ].map((chip, i) => (
+            <motion.div key={chip.label} className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-center justify-center text-center text-sm font-ibm-mono text-white/80" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + i * 0.05 }}>
+              <span className="w-2 h-2 rounded-full mr-3" style={{ backgroundColor: chip.tone }} />
+              {chip.label}
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       <StatsSection />
+      <ProcessSection />
       <HormoneAxesSection />
       <ComparisonSection />
+      <DataTrustSection />
       <WhyOptimizeSection />
       <ForWhoSection />
       <ScienceSection />
@@ -180,6 +243,45 @@ function StatsSection() {
               <stat.icon className="w-12 h-12 mb-4 text-[#8DFFE0]" />
               <p className="font-ibm-mono text-[10px] uppercase tracking-[1.5px] text-white/60 mb-2">{stat.label}</p>
               <p className="font-audiowide text-5xl bg-gradient-to-r from-[#8DFFE0] to-[#9990EA] bg-clip-text text-transparent">{stat.value}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProcessSection() {
+  const steps = [
+    { title: 'Questionnaire 5 min', desc: '35 questions ciblées lifestyle, symptômes, entraînement, sommeil.', icon: Clock3 },
+    { title: 'IA Hormones', desc: 'Modèle Claude Sonnet 4.5 + base 5000 profils hormonaux réels.', icon: Cpu },
+    { title: 'Rapport & actions', desc: 'Radar 6 axes, scores, protocole priorisé et supplémentation.', icon: ShieldCheck },
+  ];
+
+  return (
+    <section className="relative py-20 bg-[#0b0b0b] border-t border-b border-[rgba(141,255,224,0.08)]">
+      <div className="absolute inset-0 opacity-[0.04] bg-[radial-gradient(circle_at_30%_20%,rgba(141,255,224,0.15),transparent_45%),radial-gradient(circle_at_80%_50%,rgba(153,144,234,0.18),transparent_40%)]" />
+      <div className="max-w-6xl mx-auto px-6 relative">
+        <motion.h2 className="font-audiowide text-3xl md:text-4xl uppercase text-center mb-14" style={{
+          background: 'linear-gradient(135deg, #8DFFE0, #9990EA)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+          PROCESSUS ULTRA RAPIDE
+        </motion.h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {steps.map((step, i) => (
+            <motion.div key={step.title} className="relative overflow-hidden rounded-2xl border border-[rgba(255,255,255,0.08)] bg-white/5 backdrop-blur" initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }}>
+              <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-[#8DFFE0] via-[#9990EA] to-transparent" />
+              <div className="p-6 space-y-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#8DFFE0] to-[#9990EA] flex items-center justify-center shadow-[0_0_25px_rgba(141,255,224,0.35)]">
+                  <step.icon className="w-6 h-6 text-[#0b0b0b]" />
+                </div>
+                <h3 className="font-audiowide text-xl text-white">{step.title}</h3>
+                <p className="text-white/70 leading-relaxed">{step.desc}</p>
+                <div className="h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <p className="font-ibm-mono text-xs uppercase text-[#8DFFE0]/80">Step {i + 1}</p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -320,6 +422,60 @@ function ComparisonSection() {
             </Link>
           </div>
         </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function DataTrustSection() {
+  const badges = [
+    'Chiffrement AES-256',
+    'RGPD // UE',
+    'Serveurs sécurisés',
+    'Zéro partage tiers',
+  ];
+
+  return (
+    <section className="relative py-20 bg-[#0b0b0b] border-t border-b border-[rgba(141,255,224,0.08)]">
+      <div className="max-w-5xl mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 items-center">
+          <motion.div initial={{ opacity: 0, x: -14 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+            <p className="font-ibm-mono text-xs uppercase text-[#8DFFE0]/80 mb-3">Sécurité & Fiabilité</p>
+            <h3 className="font-audiowide text-3xl md:text-4xl text-white mb-4">Tes données sont blindées.</h3>
+            <p className="text-white/70 leading-relaxed mb-6">
+              Données chiffrées, stockées en Europe, accès restreint. Rapport livré puis purge programmée des données brutes côté IA. Tu gardes le contrôle total.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {badges.map((badge) => (
+                <span key={badge} className="px-4 py-2 rounded-full border border-[rgba(141,255,224,0.3)] text-xs font-ibm-mono text-white/80 bg-white/5">
+                  {badge}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+          <motion.div className="relative" initial={{ opacity: 0, x: 14 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+            <div className="rounded-3xl p-8 bg-gradient-to-br from-[rgba(141,255,224,0.08)] to-[rgba(153,144,234,0.12)] border border-[rgba(141,255,224,0.18)] shadow-[0_0_40px_rgba(141,255,224,0.25)]">
+              <div className="flex items-center gap-3 mb-4">
+                <ShieldCheck className="w-6 h-6 text-[#8DFFE0]" />
+                <p className="font-ibm-mono text-sm text-white/80">Audit de sécurité continu</p>
+              </div>
+              <div className="space-y-3 text-sm text-white/80 font-ibm-mono">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#8DFFE0] animate-neon-pulse" />
+                  Logs chiffrés & rotation 30j
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#9990EA] animate-neon-pulse" />
+                  Accès restreint par rôle (staff only)
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#8DFFE0] animate-neon-pulse" />
+                  Purge des entrées IA après livraison
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
