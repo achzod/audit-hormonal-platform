@@ -5,7 +5,6 @@ services:
     region: frankfurt
     plan: starter
     branch: main
-    rootDirectory: web
     buildCommand: npm install && npx prisma generate && npm run build
     startCommand: npm start
     autoDeploy: true
